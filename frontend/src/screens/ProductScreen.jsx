@@ -1,11 +1,23 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {Row,Col,Image,ListGroup,Card,Button} from 'react-bootstrap'
 import Rating from '../components/Rating'
-import products from '../products'
+import axios from 'axios'
+
 
 const ProductScreen = ({match}) => {
-    const product = products.find((p)=>p._id === match.params.id)
+
+    const [product,setProduct] = useState({rating:1})
+    useEffect(()=>{
+        const fetchProduct = async () =>{
+            const { data } = await axios.get(`/api/products/${match.params.id}`)
+
+            setProduct(data)    
+        }
+        fetchProduct()    
+    },[match])
+    
+    // const product = products.find((p)=>p._id === match.params.id)
     return (
         <React.Fragment>
             <Link className='btn btn-light my-3' to='/'>Back</Link>
@@ -16,7 +28,7 @@ const ProductScreen = ({match}) => {
                 <Col md={3}>
                 <ListGroup variant='flush'>
                     <ListGroup.Item>
-    <h2>{product.name}</h2>
+                      <h2>{product.name}</h2>
                     </ListGroup.Item>
                     <ListGroup.Item>
                         <Rating value={product.rating} text={`${product.numReviews} reviews`} /> 
